@@ -1,11 +1,15 @@
 use anyhow::Result;
-use std::{io::{BufRead, BufReader, Write}, net::{TcpListener, TcpStream}};
+use std::{
+    io::{BufRead, BufReader, Write},
+    net::{TcpListener, TcpStream},
+};
 
-fn main()-> Result<()> {
+fn main() -> Result<()> {
     let listener = TcpListener::bind("localhost:3000")?;
-    for connection in listener.incoming(){
+    for connection in listener.incoming() {
         let stream: TcpStream = connection?;
-        handle_connection(stream)?;
+        /// Moving handle_connection to inside thread::spawn makes it multi-threaded
+        std::thread::spawn(|| handle_connection(stream));
     }
     Ok(())
 }
@@ -13,11 +17,10 @@ fn main()-> Result<()> {
 fn handle_connection(mut stream: TcpStream) -> Result<()> {
     let mut request = Vec::new();
     let mut reader = BufReader::new(&mut stream);
-    reader
-        .read_until(b'\n', &mut request)?;
+    reader.read_until(b'\n', &mut request)?;
 
-    let request = String::from_utf8(request)?;// convert bytes to human readable format
-    print!("HTTP request line: {}",request);
+    let request = String::from_utf8(request)?; // convert bytes to human readable format
+    print!("HTTP request line: {}", request);
 
     let response = concat!(
         "HTTP/1.1 200 OK\r\n",
@@ -29,5 +32,4 @@ fn handle_connection(mut stream: TcpStream) -> Result<()> {
     stream.write(response.as_bytes())?;
     stream.flush()?;
     Ok(())
-
 }
