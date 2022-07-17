@@ -16,7 +16,13 @@ pub fn asyncmain() -> Result<()> {
     }];
 }
 
-fn wait(fds: &mut [libc::pollfd]) -> Result<usize> {}
+fn wait(fds: &mut [libc::pollfd]) -> Result<usize> {
+    syscall!(poll(
+        fds.as_mut_ptr() as *mut libc::pollfd,
+        fds.len() as libc::nfds_t,
+        -1
+    ))
+}
 
 macro_rules! syscall {
     ($fn: ident $args:tt) => {
