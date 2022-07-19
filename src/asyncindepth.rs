@@ -28,6 +28,7 @@ pub fn asyncmain() -> Result<()> {
         if num_events > 0 {
             for poll_fd in &poll_fds {
                 if poll_fd.revents & libc::POLLIN != 0 {
+                    if let Some(handler) = handlers.get(&poll_fd.fd) {}
                     println!(
                         "poll_fd {} received revents {}",
                         poll_fd.fd, poll_fd.revents
