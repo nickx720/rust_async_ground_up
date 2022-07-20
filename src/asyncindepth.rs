@@ -26,9 +26,11 @@ pub fn asyncmain() -> Result<()> {
     loop {
         let num_events = wait(&mut polls_fds)?;
         if num_events > 0 {
-            for poll_fd in &poll_fds {
+            for poll_fd in &polls_fds {
                 if poll_fd.revents & libc::POLLIN != 0 {
-                    if let Some(handler) = handlers.get(&poll_fd.fd) {}
+                    if let Some(handler) = handlers.get(&poll_fd.fd) {
+                        handler()
+                    }
                     println!(
                         "poll_fd {} received revents {}",
                         poll_fd.fd, poll_fd.revents
@@ -55,6 +57,7 @@ fn wait(fds: &mut [libc::pollfd]) -> Result<usize> {
     }
 }
 
+#[macro_use]
 macro_rules! syscall {
     ($fn: ident $args:tt) => {
         let res = unsafe {libc::$fn $args};
