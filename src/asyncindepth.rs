@@ -6,7 +6,7 @@ use std::os::unix::prelude::AsRawFd;
 /// https://youtu.be/_3LpJ6I-tzc?t=569
 
 macro_rules! syscall {
-    ($fn: ident $args:tt) => {
+    ($fn: ident $args:tt) => {{
         let res = unsafe {libc::$fn $args};
         if res == -1 {
             Err(std::io::Error::last_os_error())
@@ -14,7 +14,7 @@ macro_rules! syscall {
             Ok(res)
         }
 
-    };
+    }};
 }
 pub fn asyncmain() -> Result<()> {
     let listener = TcpListener::bind("127.0.0.1:7000")?;
