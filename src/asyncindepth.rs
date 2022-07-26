@@ -62,7 +62,7 @@ fn wait(fds: &mut [libc::pollfd]) -> Result<usize> {
             -1
         )) {
             Ok(n) => break Ok(n as usize),
-            Err(e) if e.raw_os_error() == Some(libc::EAGAIN) => continue,
+            Err(e) if e.raw_os_err() == Some(libc::EAGAIN) => continue,
             Err(e) => return Err(e),
         }
     }
