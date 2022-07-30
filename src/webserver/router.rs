@@ -1,10 +1,11 @@
+use crate::webserver::node::Node;
 use std::collections::HashMap;
 use std::io::Result;
 use std::net::TcpStream;
 
 pub type HandlerFn = fn(TcpStream) -> Result<()>;
 
-/// https://youtu.be/fdxhcDne2Ww?t=388
+/// https://youtu.be/fdxhcDne2Ww?t=685
 
 #[derive(PartialEq, Eq, Hash)]
 pub enum Method {
@@ -23,7 +24,10 @@ impl Router {
         Router {}
     }
 
-    pub fn insert(&mut self, method: &str, path: &str, handler: HandlerFn) {}
+    pub fn insert(&mut self, method: &str, path: &str, handler: HandlerFn) {
+        let node = self.routes.entry(method).or_insert(Node::new("/"));
+        node.insert(path, handler);
+    }
 
     pub fn handle(&self, method: &str, resource: &str, client: TcpStream) -> Result<()> {}
 }
