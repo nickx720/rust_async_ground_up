@@ -1,6 +1,6 @@
 use crate::webserver::node::Node;
 use std::collections::HashMap;
-use std::io::Result;
+use std::io::{BufRead, BufReader, Result};
 use std::net::TcpStream;
 
 pub type HandlerFn = fn(TcpStream) -> Result<()>;
@@ -22,6 +22,19 @@ pub struct Router {
 impl Router {
     pub fn new() -> Self {
         Router {}
+    }
+
+    pub fn route_client(&self, client: TcpStream) -> Result<()> {
+        let mut reader = BufReader::new(&client);
+        let buf = reader.fill_buf()?;
+
+        // read a single line (if one exists)
+        let mut line = String::new();
+        let mut line_reader = BufReader::new(buf);
+        let len = line_reader.read_line(&mut line)?;
+
+        // consume bytes read from original reader
+        reader.consume(len);
     }
 
     pub fn insert(&mut self, method: &str, path: &str, handler: HandlerFn) {
