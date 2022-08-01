@@ -5,7 +5,7 @@ use std::net::TcpStream;
 
 pub type HandlerFn = fn(TcpStream) -> Result<()>;
 
-/// https://youtu.be/fdxhcDne2Ww?t=685
+/// https://youtu.be/fdxhcDne2Ww?t=951
 
 #[derive(PartialEq, Eq, Hash)]
 pub enum Method {
@@ -35,6 +35,18 @@ impl Router {
 
         // consume bytes read from original reader
         reader.consume(len);
+        if len == 0 {
+            return Ok(());
+        }
+        let parts: Vec<&str> = line.split(" ").collect();
+        if parts.len() < 2 {
+            todo!()
+        } else {
+            match (parts[0], parts[1]) {
+                ("GET", path) => self.handle(Method::GET, path, client),
+                _ => todo!(),
+            }
+        }
     }
 
     pub fn insert(&mut self, method: &str, path: &str, handler: HandlerFn) {
@@ -42,5 +54,7 @@ impl Router {
         node.insert(path, handler);
     }
 
-    pub fn handle(&self, method: &str, resource: &str, client: TcpStream) -> Result<()> {}
+    pub fn handle(&self, method: Method, path: &str, client: TcpStream) -> Result<()> {
+        if let Some(node)
+    }
 }
