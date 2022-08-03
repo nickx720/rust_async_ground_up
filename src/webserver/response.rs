@@ -8,6 +8,15 @@ pub struct Response {
     writer: BufWriter<TcpStream>,
 }
 
+pub fn status(code: i32) -> &'static str {
+    match code {
+        200 => "OK",
+        400 => "BAD REQUEST",
+        404 => "NOT FOUND",
+        _ => "NOT IMPLEMENTED",
+    }
+}
+
 impl Response {
     pub fn new(client: TcpStream) -> Self {
         Response {
@@ -15,9 +24,9 @@ impl Response {
         }
     }
 
-    pub fn write_status(&mut self, code: i32, status: &str) -> Result<usize> {
+    pub fn write_status(&mut self, code: i32) -> Result<usize> {
         self.writer
-            .write(format!("HTTP/1.1 {} {}\n", code, status).as_bytes())
+            .write(format!("HTTP/1.1 {} {}\n", code, status(code)).as_bytes())
     }
 
     pub fn write_header(&mut self, key: &str, val: &str) -> Result<usize> {
@@ -66,8 +75,8 @@ impl Response {
         self.writer.flush()
     }
 
-    pub fn sendfile(&mut self, code: i32, status: &str, path: &str) -> Result<()> {
-        self.write_status(code, status)?;
+    pub fn sendfile(&mut self, code: i32, path: &str) -> Result<()> {
+        self.write_status(code)?;
         self.write_file(path)?;
         self.flush()
     }
