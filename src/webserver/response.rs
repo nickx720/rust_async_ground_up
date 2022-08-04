@@ -40,7 +40,7 @@ impl Response {
         self.writer.write(val)
     }
 
-    pub fn mime_type(&self, key: &str) -> &str {
+    pub fn parse_mime_type(&self, key: &str) -> &str {
         if let Some((_, ext)) = key.rsplit_once(".") {
             match ext {
                 "html" => "text/html",
@@ -66,7 +66,7 @@ impl Response {
 
         self.write_header(
             "content-type",
-            format!("{};charset=UTF-8", self.parse_mime_type(path)),
+            format!("{};charset=UTF-8", self.parse_mime_type(path)).as_str(),
         )?;
         self.write_body(&buf)
     }
