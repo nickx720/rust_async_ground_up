@@ -22,7 +22,9 @@ pub struct Router {
 
 impl Router {
     pub fn new() -> Self {
-        Router {routes: HashMap::new()}
+        Router {
+            routes: HashMap::new(),
+        }
     }
 
     pub fn route_client(&self, client: TcpStream) -> Result<()> {
@@ -41,15 +43,15 @@ impl Router {
         }
         let parts: Vec<&str> = line.split(" ").collect();
         if parts.len() < 2 {
-            let res = Response::new(client);
+            let mut res = Response::new(client);
             res.sendfile(400, "static/_400.html")
         } else {
             match (parts[0], parts[1]) {
                 ("GET", path) => self.handle(Method::GET, path, client),
                 _ => {
-                    let res = Response::new(client);
+                    let mut res = Response::new(client);
                     res.sendfile(404, "static/_404.html")
-                },
+                }
             }
         }
     }
@@ -60,6 +62,14 @@ impl Router {
     }
 
     pub fn handle(&self, method: Method, path: &str, client: TcpStream) -> Result<()> {
-        if let Some(node)
+        if let Some(node) = self.routes.get(&method) {
+            if let Some(handler) = node.get(path) {
+                return handler(client);
+            } else {
+                Ok(())
+            }
+        } else {
+            Ok(())
+        }
     }
 }

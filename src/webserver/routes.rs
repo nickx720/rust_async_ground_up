@@ -10,11 +10,11 @@ pub fn configure(router: &mut Router) {
 }
 
 fn index(client: TcpStream) -> Result<()> {
-    let res = Response::new(client);
+    let mut res = Response::new(client);
     res.sendfile(200, "static/index.html")
 }
 
 fn styles(client: TcpStream) -> Result<()> {
-    let res = Response::new(client);
+    let mut res = Response::new(client);
     res.sendfile(200, "static/styles.css")
 }
