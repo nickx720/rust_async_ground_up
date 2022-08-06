@@ -13,6 +13,8 @@ pub fn webservermain() -> Result<()> {
     let mut router = Router::new();
     routes::configure(&mut router);
 
-    for client in listener.incoming() {}
-    todo!()
+    for client in listener.incoming() {
+        router.route_client(client?);
+    }
+    Ok(())
 }
