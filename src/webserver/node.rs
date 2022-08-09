@@ -34,7 +34,9 @@ impl Node {
                 }
             }
             None => {
-                todo!()
+                let mut node = Node::new(path);
+                node.handler = Some(f);
+                self.nodes.push(node);
             }
         }
     }
