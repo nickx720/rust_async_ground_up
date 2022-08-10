@@ -10,10 +10,18 @@ use router::Router;
 pub fn webservermain() -> Result<()> {
     let listener = TcpListener::bind("127.0.0.1:7000")?;
 
+    let pid = std::process::id();
+    println!("[{pid}] server listening on 127.0.0.1:7000");
+
     let mut router = Router::new();
     routes::configure(&mut router);
 
     for client in listener.incoming() {
+        {
+            let addr = &client.expect("no ip found").peer_addr();
+
+            println!("[{pid}] server listening on {addr:?}");
+        }
         router.route_client(client?);
     }
     Ok(())
