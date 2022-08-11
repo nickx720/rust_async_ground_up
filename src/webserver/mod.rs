@@ -17,11 +17,6 @@ pub fn webservermain() -> Result<()> {
     routes::configure(&mut router);
 
     for client in listener.incoming() {
-        {
-            let addr = &client.expect("no ip found").peer_addr();
-
-            println!("[{pid}] server listening on {addr:?}");
-        }
         router.route_client(client?);
     }
     Ok(())
