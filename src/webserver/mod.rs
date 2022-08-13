@@ -27,14 +27,13 @@ pub fn webservermain() -> Result<()> {
 
     let mut router = Router::new();
     routes::configure(&mut router);
+    let pids = Vec::new();
+    for _ in 0..10 {
+        let child_pid = fork()?;
+        // complete this
+        if chi
 
-    for client in listener.incoming() {
-        let chiild_pid = fork()?;
-        if chiild_pid == 0 {
-            router.route_client(client?);
-        } else {
-            println!("[{pid} forking process, new {chiild_pid}]");
-        }
     }
+
     Ok(())
 }
