@@ -31,8 +31,14 @@ pub fn webservermain() -> Result<()> {
     for _ in 0..10 {
         let child_pid = fork()?;
         // complete this
-        if chi
-
+        if child_pid == 0 {
+            for client in listener.incoming() {
+                router.route_client(client?, pid)?;
+            }
+            break;
+        } else {
+            println!("[{pid}] forking process,new {child_pid}");
+        }
     }
 
     Ok(())

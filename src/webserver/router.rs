@@ -27,9 +27,9 @@ impl Router {
         }
     }
 
-    pub fn route_client(&self, client: TcpStream) -> Result<()> {
+    pub fn route_client(&self, client: TcpStream, pid: u32) -> Result<()> {
         let addr = &client.peer_addr()?;
-        println!("The addr of the incoming client is {addr}");
+        println!("[{pid}] client connected at {addr}");
         let mut reader = BufReader::new(&client);
         let buf = reader.fill_buf()?;
 
