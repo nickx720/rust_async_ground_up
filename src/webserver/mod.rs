@@ -19,6 +19,10 @@ fn fork() -> Result<u32> {
     check_err(unsafe { libc::fork() }).map(|pid| pid as u32)
 }
 
+fn waitpid(pid: i32) -> Result<u32> {
+    check_err(unsafe { libc::waitpid(pid, 0 as *mut libc::c_int, 0) }).map(|code| code as u32)
+}
+
 pub fn webservermain() -> Result<()> {
     let listener = TcpListener::bind("127.0.0.1:7000")?;
 
@@ -27,7 +31,7 @@ pub fn webservermain() -> Result<()> {
 
     let mut router = Router::new();
     routes::configure(&mut router);
-    let pids = Vec::new();
+    let mut pids = Vec::new();
     for _ in 0..10 {
         let child_pid = fork()?;
         // complete this
@@ -39,7 +43,12 @@ pub fn webservermain() -> Result<()> {
         } else {
             println!("[{pid}] forking process,new {child_pid}");
         }
+        pids.push(child_pid);
     }
-
+    // Parent process exits here
+    for p in pids {
+        waitpid(p as i32)?;
+        println!("[{pid}] <<< {p} exited")
+    }
     Ok(())
 }
