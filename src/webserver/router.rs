@@ -6,7 +6,7 @@ use std::net::TcpStream;
 
 pub type HandlerFn = fn(TcpStream) -> Result<()>;
 
-/// https://youtu.be/fdxhcDne2Ww?t=1601
+/// https://youtu.be/fdxhcDne2Ww?t=1781
 
 #[derive(PartialEq, Eq, Hash)]
 pub enum Method {
@@ -27,9 +27,7 @@ impl Router {
         }
     }
 
-    pub fn route_client(&self, client: TcpStream, pid: u32) -> Result<()> {
-        let addr = &client.peer_addr()?;
-        println!("[{pid}] client connected at {addr}");
+    pub fn route_client(&self, client: TcpStream) -> Result<()> {
         let mut reader = BufReader::new(&client);
         let buf = reader.fill_buf()?;
 

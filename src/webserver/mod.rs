@@ -1,6 +1,7 @@
 use std::io::Error;
 use std::io::Result;
 use std::net::TcpListener;
+use std::sync::Arc;
 mod node;
 mod response;
 mod router;
@@ -31,13 +32,21 @@ pub fn webservermain() -> Result<()> {
 
     let mut router = Router::new();
     routes::configure(&mut router);
+    let router = Arc::new(router);
     let mut pids = Vec::new();
     for _ in 0..10 {
         let child_pid = fork()?;
         // complete this
         if child_pid == 0 {
+            let router = Arc::clone(&router);
             for client in listener.incoming() {
-                router.route_client(client?, pid)?;
+                let handle = std::thread::spawn(move || {
+                    println!(
+                        "[{pid}] {:?} client connected at",
+                        std::thread::current().id()
+                    );
+                    router.route_client(client)?;
+                });
             }
             break;
         } else {
