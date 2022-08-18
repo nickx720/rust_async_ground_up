@@ -45,7 +45,7 @@ pub fn webservermain() -> Result<()> {
                         "[{pid}] {:?} client connected at",
                         std::thread::current().id()
                     );
-                    router.route_client(client)?;
+                    router.route_client(client?);
                 });
             }
             break;
