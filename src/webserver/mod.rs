@@ -35,6 +35,7 @@ pub fn webservermain() -> Result<()> {
     let router = Arc::new(router);
     let mut pids = Vec::new();
     for _ in 0..10 {
+        let mut handles = Vec::new();
         let child_pid = fork()?;
         // complete this
         if child_pid == 0 {
@@ -47,6 +48,7 @@ pub fn webservermain() -> Result<()> {
                     );
                     router.route_client(client?);
                 });
+                handles.push(handle);
             }
             break;
         } else {
