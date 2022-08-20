@@ -50,6 +50,9 @@ pub fn webservermain() -> Result<()> {
                 });
                 handles.push(handle);
             }
+            while let Some(handle) = handles.pop() {
+                handle.join().unwrap();
+            }
             break;
         } else {
             println!("[{pid}] forking process,new {child_pid}");
