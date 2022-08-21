@@ -35,12 +35,12 @@ pub fn webservermain() -> Result<()> {
     let router = Arc::new(router);
     let mut pids = Vec::new();
     for _ in 0..10 {
-        let mut handles = Vec::new();
         let child_pid = fork()?;
         // complete this
         if child_pid == 0 {
-            let router = Arc::clone(&router);
+            let mut handles = Vec::new();
             for client in listener.incoming() {
+                let router = Arc::clone(&router);
                 let handle = std::thread::spawn(move || {
                     println!(
                         "[{pid}] {:?} client connected at",
