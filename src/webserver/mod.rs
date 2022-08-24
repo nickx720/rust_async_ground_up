@@ -6,6 +6,7 @@ mod node;
 mod response;
 mod router;
 mod routes;
+mod worker;
 
 use router::Router;
 
