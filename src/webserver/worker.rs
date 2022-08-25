@@ -1,3 +1,6 @@
 use std::thread;
 
-pub struct Worker {}
+pub struct Worker {
+    id: usize,
+    thread: Option<thread::JoinHandle<()>>,
+}
