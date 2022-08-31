@@ -11,3 +11,15 @@ impl Drop for Threadpool {
         }
     }
 }
+
+impl Threadpool {
+    pub fn new(size: usize) -> Self {
+        let mut workers = Vec::with_capacity(size);
+
+        for id in 0..size {
+            workers.push(Worker::new(id));
+        }
+
+        Threadpool { workers }
+    }
+}
