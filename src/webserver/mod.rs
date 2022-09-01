@@ -12,6 +12,8 @@ mod worker;
 
 use router::Router;
 
+use crate::webserver::thread_pool::Threadpool;
+
 fn check_err(num: i32) -> Result<i32> {
     if num < 0 {
         return Err(Error::last_os_error());
@@ -41,6 +43,7 @@ pub fn webservermain() -> Result<()> {
         let child_pid = fork()?;
         // complete this
         if child_pid == 0 {
+            let mut pool = Threadpool::new(4);
             let mut handles = Vec::new();
             for client in listener.incoming() {
                 let router = Arc::clone(&router);

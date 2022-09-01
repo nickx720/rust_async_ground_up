@@ -1,3 +1,4 @@
+use crate::webserver::worker::Worker;
 pub struct Threadpool {
     workers: Vec<Worker>,
 }
