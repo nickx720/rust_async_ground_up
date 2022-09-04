@@ -21,6 +21,7 @@ impl Threadpool {
         let mut workers = Vec::with_capacity(size);
 
         let (tx, rx) = mpsc::channel();
+        let rx = Arc::new(Mutex::new(rx));
         for id in 0..size {
             workers.push(Worker::new(id));
         }
