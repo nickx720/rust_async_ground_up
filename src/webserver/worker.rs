@@ -10,7 +10,7 @@ pub struct Worker {
 
 impl Worker {
     pub fn new(id: usize, receiver: Arc<Mutex<mpsc::Receiver<_>>>) -> Self {
-        let handle = thread::spawn(move || {});
+        let handle = thread::spawn(move || loop {});
 
         Worker {
             id,
