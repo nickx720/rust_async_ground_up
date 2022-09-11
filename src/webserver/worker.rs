@@ -10,12 +10,22 @@ pub struct Worker {
 
 pub type Job = Box<dyn FnOnce() + Send + 'static>;
 
+pub enum Task {
+    New(Job),
+    Exit,
+}
+
 impl Worker {
-    pub fn new(id: usize, receiver: Arc<Mutex<mpsc::Receiver<_>>>) -> Self {
+    pub fn new(id: usize, receiver: Arc<Mutex<mpsc::Receiver<Task>>>) -> Self {
         let handle = thread::spawn(move || loop {
             let task = {
                 let rx = receiver.lock().unwrap();
                 rx.recv().unwrap()
+            };
+
+            match task {
+                Task::New(job) => job(),
+                Task::Exit => break,
             }
         });
 
