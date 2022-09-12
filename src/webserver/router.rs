@@ -6,7 +6,7 @@ use std::net::TcpStream;
 
 pub type HandlerFn = fn(TcpStream) -> Result<()>;
 
-/// https://youtu.be/fdxhcDne2Ww?t=2538
+/// https://www.youtube.com/watch?v=fdxhcDne2Ww&t=2538s
 
 #[derive(PartialEq, Eq, Hash)]
 pub enum Method {

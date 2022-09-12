@@ -4,8 +4,8 @@ use std::sync::Mutex;
 use std::thread;
 
 pub struct Worker {
-    id: usize,
-    thread: Option<thread::JoinHandle<()>>,
+    pub id: usize,
+    pub thread: Option<thread::JoinHandle<()>>,
 }
 
 pub type Job = Box<dyn FnOnce() + Send + 'static>;
