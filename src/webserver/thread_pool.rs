@@ -37,7 +37,11 @@ impl Threadpool {
         }
     }
 
-    pub fn execute<F>(&self, f: F) {
-        todo!()
+    pub fn execute<F>(&self, f: F)
+    where
+        F: FnOnce() + Send + 'static,
+    {
+        let job = Box::new(f);
+        self.sender.send(Task::New(job)).unwrap();
     }
 }
