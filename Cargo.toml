@@ -8,3 +8,4 @@ edition = "2018"
 [dependencies]
 anyhow = "1.0.41"
 libc = "0.2"
+polling = "2.3.0"
